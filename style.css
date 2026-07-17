@@ -1,0 +1,448 @@
+/**************************************************************
+ * STYLE.CSS
+ * Gerente Digital V1.0
+ **************************************************************/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#050505;
+
+    color:#ffffff;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    height:100vh;
+
+    overflow:hidden;
+
+}
+
+.app{
+
+    max-width:1200px;
+
+    margin:auto;
+
+    height:100vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:20px;
+
+}
+
+
+
+/***********************
+ TOPO
+************************/
+
+.topo{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.topo h1{
+
+    font-size:32px;
+
+    font-weight:bold;
+
+}
+
+.status{
+
+    color:#54ff8c;
+
+    font-size:14px;
+
+}
+
+
+
+/***********************
+ PAINEL
+************************/
+
+.painel{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+.card{
+
+    background:#111;
+
+    border:1px solid #222;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    transition:.25s;
+
+}
+
+.card:hover{
+
+    border-color:#444;
+
+}
+
+.card span{
+
+    display:block;
+
+    color:#999;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+}
+
+.card strong{
+
+    font-size:28px;
+
+}
+
+
+
+/***********************
+ CHAT
+************************/
+
+.chat{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    background:#0d0d0d;
+
+    border:1px solid #222;
+
+    border-radius:15px;
+
+    padding:20px;
+
+}
+
+.chat::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.chat::-webkit-scrollbar-thumb{
+
+    background:#333;
+
+    border-radius:20px;
+
+}
+
+.mensagem{
+
+    max-width:80%;
+
+    padding:15px;
+
+    margin-bottom:18px;
+
+    border-radius:12px;
+
+    line-height:1.6;
+
+    animation:aparecer .25s ease;
+
+}
+
+.usuario{
+
+    margin-left:auto;
+
+    background:#1d1d1d;
+
+}
+
+.sistema{
+
+    background:#151515;
+
+    border:1px solid #222;
+
+}
+
+@keyframes aparecer{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:none;
+
+    }
+
+}
+
+
+
+/***********************
+ BOTÕES
+************************/
+
+.atalhos{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:10px;
+
+    margin-top:18px;
+
+}
+
+.atalhos button{
+
+    background:#171717;
+
+    color:white;
+
+    border:1px solid #333;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    font-size:15px;
+
+}
+
+.atalhos button:hover{
+
+    background:#222;
+
+}
+
+
+
+/***********************
+ DIGITAÇÃO
+************************/
+
+.entrada{
+
+    margin-top:20px;
+
+}
+
+textarea{
+
+    width:100%;
+
+    height:90px;
+
+    resize:none;
+
+    background:#111;
+
+    color:white;
+
+    border:1px solid #333;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    font-size:16px;
+
+}
+
+textarea:focus{
+
+    outline:none;
+
+    border-color:#777;
+
+}
+
+.acoes{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:12px;
+
+}
+
+.upload{
+
+    width:50px;
+
+    height:50px;
+
+    background:#171717;
+
+    border:1px solid #333;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    font-size:22px;
+
+}
+
+.upload input{
+
+    display:none;
+
+}
+
+#voz{
+
+    width:50px;
+
+    height:50px;
+
+    background:#171717;
+
+    color:white;
+
+    border:1px solid #333;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+}
+
+#enviar{
+
+    width:70px;
+
+    height:50px;
+
+    background:white;
+
+    color:black;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+
+
+/***********************
+ RESPONSIVO
+************************/
+
+@media(max-width:900px){
+
+.painel{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+.atalhos{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:600px){
+
+body{
+
+overflow:auto;
+
+}
+
+.app{
+
+padding:12px;
+
+height:auto;
+
+}
+
+.painel{
+
+grid-template-columns:1fr;
+
+}
+
+.atalhos{
+
+grid-template-columns:1fr;
+
+}
+
+.topo h1{
+
+font-size:24px;
+
+}
+
+}

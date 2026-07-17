@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gerente Digital</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="topo">
+
+        <div>
+
+            <h1>🤖 Gerente Digital</h1>
+
+            <span class="status">
+
+                🟢 Sistema Online
+
+            </span>
+
+        </div>
+
+    </header>
+
+
+
+    <section class="painel">
+
+        <div class="card">
+
+            <span>📦 Produtos</span>
+
+            <strong id="totalProdutos">--</strong>
+
+        </div>
+
+        <div class="card">
+
+            <span>📚 Lotes</span>
+
+            <strong id="totalLotes">--</strong>
+
+        </div>
+
+        <div class="card">
+
+            <span>📊 Quantidade</span>
+
+            <strong id="quantidadeTotal">--</strong>
+
+        </div>
+
+        <div class="card">
+
+            <span>💰 Estoque</span>
+
+            <strong id="valorEstoque">--</strong>
+
+        </div>
+
+    </section>
+
+
+
+    <section id="chat" class="chat">
+
+        <div class="mensagem sistema">
+
+            Bem-vinda ao Gerente Digital.
+
+        </div>
+
+    </section>
+
+
+
+    <section class="atalhos">
+
+        <button onclick="consultaRapida('estoque')">
+
+            📦 Estoque
+
+        </button>
+
+        <button onclick="consultaRapida('vencimentos')">
+
+            ⚠️ Vencimentos
+
+        </button>
+
+        <button onclick="consultaRapida('baixo')">
+
+            📉 Estoque Baixo
+
+        </button>
+
+        <button onclick="consultaRapida('histórico')">
+
+            📜 Histórico
+
+        </button>
+
+    </section>
+
+
+
+    <section class="entrada">
+
+        <textarea
+
+            id="pergunta"
+
+            placeholder="Digite sua pergunta..."
+
+        ></textarea>
+
+        <div class="acoes">
+
+            <label class="upload">
+
+                📷
+
+                <input
+
+                    type="file"
+
+                    id="imagem"
+
+                    accept="image/*"
+
+                >
+
+            </label>
+
+            <button id="voz">
+
+                🎤
+
+            </button>
+
+            <button id="enviar">
+
+                ➜
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="config.js"></script>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
