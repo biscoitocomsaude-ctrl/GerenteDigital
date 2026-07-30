@@ -227,15 +227,11 @@ async function enviarMensagem(){
 
         }
 
-        const dados =
-
-        await resposta.json();
-
-        mostrarResposta(
-
-            dados
-
-        );
+       const dados = {
+token: CONFIG.TOKEN,
+acao: acao,
+mensagem: pergunta
+};
 
     }
 
