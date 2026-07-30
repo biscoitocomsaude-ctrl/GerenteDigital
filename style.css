@@ -3,15 +3,24 @@
  * Gerente Digital V1.0
  **************************************************************/
 
+/* ==========================================
+   Configuração Geral
+========================================== */
+
 *{
+
     margin:0;
+
     padding:0;
+
     box-sizing:border-box;
+
 }
+
 
 body{
 
-    background:#050505;
+    background:#000;
 
     color:#ffffff;
 
@@ -19,121 +28,64 @@ body{
 
     height:100vh;
 
-    overflow:hidden;
-
 }
+
+
+/* ==========================================
+   Aplicação
+========================================== */
 
 .app{
 
-    max-width:1200px;
+    width:100%;
 
-    margin:auto;
+    max-width:900px;
 
     height:100vh;
+
+    margin:auto;
 
     display:flex;
 
     flex-direction:column;
 
-    padding:20px;
-
 }
 
 
-
-/***********************
- TOPO
-************************/
+/* ==========================================
+   Cabeçalho
+========================================== */
 
 .topo{
 
-    display:flex;
+    padding:20px;
 
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:20px;
+    border-bottom:1px solid #222;
 
 }
+
 
 .topo h1{
 
-    font-size:32px;
-
-    font-weight:bold;
-
-}
-
-.status{
-
-    color:#54ff8c;
-
-    font-size:14px;
-
-}
-
-
-
-/***********************
- PAINEL
-************************/
-
-.painel{
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:15px;
-
-    margin-bottom:20px;
-
-}
-
-.card{
-
-    background:#111;
-
-    border:1px solid #222;
-
-    border-radius:14px;
-
-    padding:20px;
-
-    transition:.25s;
-
-}
-
-.card:hover{
-
-    border-color:#444;
-
-}
-
-.card span{
-
-    display:block;
-
-    color:#999;
+    font-size:28px;
 
     margin-bottom:8px;
 
+}
+
+
+.status{
+
+    color:#42ff7b;
+
     font-size:14px;
 
 }
 
-.card strong{
 
-    font-size:28px;
-
-}
-
-
-
-/***********************
- CHAT
-************************/
+/* ==========================================
+   Conversa
+========================================== */
 
 .chat{
 
@@ -141,137 +93,73 @@ body{
 
     overflow-y:auto;
 
-    background:#0d0d0d;
-
-    border:1px solid #222;
-
-    border-radius:15px;
-
     padding:20px;
 
 }
 
-.chat::-webkit-scrollbar{
 
-    width:8px;
-
-}
-
-.chat::-webkit-scrollbar-thumb{
-
-    background:#333;
-
-    border-radius:20px;
-
-}
+/* ==========================================
+   Mensagens
+========================================== */
 
 .mensagem{
 
-    max-width:80%;
+    margin-bottom:20px;
 
-    padding:15px;
-
-    margin-bottom:18px;
+    padding:16px;
 
     border-radius:12px;
 
     line-height:1.6;
 
-    animation:aparecer .25s ease;
+    word-break:break-word;
 
 }
+
 
 .usuario{
 
-    margin-left:auto;
+    background:#1b1b1b;
 
-    background:#1d1d1d;
+    border-left:4px solid #4da3ff;
 
 }
+
 
 .sistema{
 
-    background:#151515;
+    background:#121212;
 
-    border:1px solid #222;
-
-}
-
-@keyframes aparecer{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(10px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:none;
-
-    }
+    border-left:4px solid #42ff7b;
 
 }
 
 
+.erro{
 
-/***********************
- BOTÕES
-************************/
+    background:#320000;
 
-.atalhos{
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:10px;
-
-    margin-top:18px;
-
-}
-
-.atalhos button{
-
-    background:#171717;
-
-    color:white;
-
-    border:1px solid #333;
-
-    padding:14px;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-    font-size:15px;
-
-}
-
-.atalhos button:hover{
-
-    background:#222;
+    border-left:4px solid #ff4444;
 
 }
 
 
-
-/***********************
- DIGITAÇÃO
-************************/
+/* ==========================================
+   Rodapé
+========================================== */
 
 .entrada{
 
-    margin-top:20px;
+    padding:20px;
+
+    border-top:1px solid #222;
 
 }
+
+
+/* ==========================================
+   Caixa de Texto
+========================================== */
 
 textarea{
 
@@ -287,162 +175,109 @@ textarea{
 
     border:1px solid #333;
 
-    border-radius:12px;
+    border-radius:10px;
 
     padding:15px;
 
     font-size:16px;
 
+    outline:none;
+
 }
+
 
 textarea:focus{
 
-    outline:none;
-
-    border-color:#777;
+    border:1px solid #42ff7b;
 
 }
+
+
+/* ==========================================
+   Botões
+========================================== */
 
 .acoes{
 
+    margin-top:15px;
+
     display:flex;
 
-    justify-content:flex-end;
-
-    align-items:center;
+    justify-content:space-between;
 
     gap:10px;
 
-    margin-top:12px;
-
 }
 
-.upload{
 
-    width:50px;
+button{
+
+    flex:1;
 
     height:50px;
-
-    background:#171717;
-
-    border:1px solid #333;
-
-    border-radius:10px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    cursor:pointer;
-
-    font-size:22px;
-
-}
-
-.upload input{
-
-    display:none;
-
-}
-
-#voz{
-
-    width:50px;
-
-    height:50px;
-
-    background:#171717;
-
-    color:white;
-
-    border:1px solid #333;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    font-size:20px;
-
-}
-
-#enviar{
-
-    width:70px;
-
-    height:50px;
-
-    background:white;
-
-    color:black;
 
     border:none;
 
     border-radius:10px;
 
-    cursor:pointer;
+    background:#42ff7b;
 
-    font-size:22px;
+    color:#000;
+
+    font-size:16px;
 
     font-weight:bold;
 
-}
+    cursor:pointer;
 
-
-
-/***********************
- RESPONSIVO
-************************/
-
-@media(max-width:900px){
-
-.painel{
-
-grid-template-columns:repeat(2,1fr);
+    transition:0.25s;
 
 }
 
-.atalhos{
 
-grid-template-columns:repeat(2,1fr);
+button:hover{
 
-}
-
-}
-
-@media(max-width:600px){
-
-body{
-
-overflow:auto;
+    background:#69ff95;
 
 }
 
-.app{
 
-padding:12px;
+button:active{
 
-height:auto;
-
-}
-
-.painel{
-
-grid-template-columns:1fr;
+    transform:scale(.98);
 
 }
 
-.atalhos{
 
-grid-template-columns:1fr;
+/* ==========================================
+   Scroll
+========================================== */
+
+.chat::-webkit-scrollbar{
+
+    width:8px;
 
 }
 
-.topo h1{
 
-font-size:24px;
+.chat::-webkit-scrollbar-track{
+
+    background:#111;
 
 }
+
+
+.chat::-webkit-scrollbar-thumb{
+
+    background:#444;
+
+    border-radius:20px;
+
+}
+
+
+.chat::-webkit-scrollbar-thumb:hover{
+
+    background:#666;
 
 }

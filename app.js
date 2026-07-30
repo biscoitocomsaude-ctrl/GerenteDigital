@@ -1,61 +1,197 @@
 /**************************************************************
  * APP.JS
- * Gerente Digital V1.0
+ * Gerente Digital V1.1
+ * Interface de Conversa
  **************************************************************/
 
-const chat = document.getElementById("chat");
-const campoPergunta = document.getElementById("pergunta");
-const botaoEnviar = document.getElementById("enviar");
+//====================================================
+// Elementos da tela
+//====================================================
 
-botaoEnviar.addEventListener("click", consultar);
+const txtPergunta =
+document.getElementById("pergunta");
 
-campoPergunta.addEventListener("keydown", function(e){
+const btnEnviar =
+document.getElementById("enviar");
 
-    if(e.key === "Enter" && !e.shiftKey){
+const btnMicrofone =
+document.getElementById("microfone");
 
-        e.preventDefault();
+const areaResposta =
+document.getElementById("resposta");
 
-        consultar();
+
+//====================================================
+// Eventos
+//====================================================
+
+btnEnviar.addEventListener(
+
+    "click",
+
+    enviarMensagem
+
+);
+
+
+txtPergunta.addEventListener(
+
+    "keydown",
+
+    function(e){
+
+        if(e.key==="Enter" && !e.shiftKey){
+
+            e.preventDefault();
+
+            enviarMensagem();
+
+        }
 
     }
 
-});
+);
+
+
+//====================================================
+// Reconhecimento de Voz
+//====================================================
+
+let reconhecimento = null;
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(SpeechRecognition){
+
+    reconhecimento =
+
+    new SpeechRecognition();
+
+    reconhecimento.lang = "pt-BR";
+
+    reconhecimento.interimResults = false;
+
+    reconhecimento.maxAlternatives = 1;
+
+    btnMicrofone.addEventListener(
+
+        "click",
+
+        iniciarMicrofone
+
+    );
+
+}
+else{
+
+    btnMicrofone.disabled = true;
+
+    btnMicrofone.innerHTML = "❌";
+
+    btnMicrofone.title =
+    "Reconhecimento de voz não suportado.";
+
+}
 
 
 
-/**************************************************************
- * CONSULTA PRINCIPAL
- **************************************************************/
+//====================================================
+// Iniciar Microfone
+//====================================================
 
-async function consultar(){
+function iniciarMicrofone(){
 
-    const pergunta = campoPergunta.value.trim();
+    btnMicrofone.innerHTML = "🎙️";
 
-    if(pergunta === ""){
+    btnMicrofone.disabled = true;
+
+    reconhecimento.start();
+
+}
+
+
+
+//====================================================
+// Resultado
+//====================================================
+
+if(reconhecimento){
+
+    reconhecimento.onresult =
+
+    function(event){
+
+        const texto =
+
+        event.results[0][0].transcript;
+
+        txtPergunta.value = texto;
+
+        txtPergunta.focus();
+
+    };
+
+
+    reconhecimento.onend =
+
+    function(){
+
+        btnMicrofone.innerHTML = "🎤";
+
+        btnMicrofone.disabled = false;
+
+    };
+
+
+    reconhecimento.onerror =
+
+    function(){
+
+        btnMicrofone.innerHTML = "🎤";
+
+        btnMicrofone.disabled = false;
+
+    };
+
+}
+
+
+
+//====================================================
+// Enviar Mensagem
+//====================================================
+
+async function enviarMensagem(){
+
+    const mensagem =
+
+    txtPergunta.value.trim();
+
+    if(mensagem===""){
+
+        txtPergunta.focus();
 
         return;
 
     }
 
-    adicionarMensagem("usuario", pergunta);
+    mostrarMensagemUsuario(
 
-    campoPergunta.value = "";
+        mensagem
 
-    adicionarMensagem("sistema", "⏳ Consultando...");
+    );
 
-    const acao = interpretarPergunta(pergunta);
+    txtPergunta.value="";
 
-    const dados = {
-
-        token: CONFIG.TOKEN,
-
-        acao: acao
-
-    };
+    mostrarCarregando();
 
     try{
 
-        const retorno = await fetch(
+        const resposta =
+
+        await fetch(
 
             CONFIG.API_URL,
 
@@ -65,27 +201,39 @@ async function consultar(){
 
                 headers:{
 
-                    "Content-Type":"text/plain"
+                    "Content-Type":"application/json"
 
                 },
 
-                body:JSON.stringify(dados)
+                body:JSON.stringify({
+
+                    token:CONFIG.TOKEN,
+
+                    mensagem:mensagem
+
+                })
 
             }
 
         );
 
-        const resultado = await retorno.json();
+        if(!resposta.ok){
 
-        removerUltimaMensagem();
+            throw new Error(
 
-        atualizarPainel(resultado);
+                "Erro de comunicação."
 
-        adicionarMensagem(
+            );
 
-            "sistema",
+        }
 
-            formatarResposta(resultado)
+        const dados =
+
+        await resposta.json();
+
+        mostrarResposta(
+
+            dados
 
         );
 
@@ -93,13 +241,9 @@ async function consultar(){
 
     catch(erro){
 
-        removerUltimaMensagem();
+        mostrarErro(
 
-        adicionarMensagem(
-
-            "sistema",
-
-            "❌ " + erro.message
+            erro.message
 
         );
 
@@ -109,377 +253,165 @@ async function consultar(){
 
 
 
-/**************************************************************
- * CHAT
- **************************************************************/
+//====================================================
+// Mensagem do Usuário
+//====================================================
 
-function adicionarMensagem(tipo,texto){
+function mostrarMensagemUsuario(texto){
 
-    const div = document.createElement("div");
+    areaResposta.innerHTML +=
 
-    div.className = "mensagem " + tipo;
+    `
 
-    div.innerHTML = texto;
+    <div class="mensagem usuario">
 
-    chat.appendChild(div);
+        <strong>Você</strong><br><br>
 
-    chat.scrollTop = chat.scrollHeight;
+        ${texto}
 
-}
+    </div>
 
+    `;
 
-
-function removerUltimaMensagem(){
-
-    const mensagens =
-
-        document.querySelectorAll(".mensagem");
-
-    if(mensagens.length>0){
-
-        mensagens[mensagens.length-1].remove();
-
-    }
+    rolarChat();
 
 }
 
 
 
-/**************************************************************
- * PAINEL SUPERIOR
- **************************************************************/
+//====================================================
+// Processando
+//====================================================
 
-function atualizarPainel(resultado){
+function mostrarCarregando(){
 
-    if(
+    areaResposta.innerHTML +=
 
-        !resultado.status ||
+    `
 
-        resultado.acao !== "RESUMO_ESTOQUE"
+    <div
+        id="digitando"
+        class="mensagem sistema">
 
-    ){
+        Gerente Digital está processando...
 
-        return;
+    </div>
+
+    `;
+
+    rolarChat();
+
+}
+
+
+
+//====================================================
+// Resposta
+//====================================================
+
+function mostrarResposta(retorno){
+
+    removerDigitando();
+
+    let texto="";
+
+    if(retorno.resposta){
+
+        texto = retorno.resposta;
 
     }
 
+    else if(retorno.mensagem){
+
+        texto = retorno.mensagem;
+
+    }
+
+    else if(retorno.erro){
+
+        texto = retorno.erro;
+
+    }
+
+    else{
+
+        texto = JSON.stringify(
+
+            retorno,
+
+            null,
+
+            2
+
+        );
+
+    }
+
+    areaResposta.innerHTML +=
+
+    `
+
+    <div class="mensagem sistema">
+
+        <strong>Gerente Digital</strong><br><br>
+
+        ${texto}
+
+    </div>
+
+    `;
+
+    rolarChat();
+
+}
+
+
+
+//====================================================
+// Erro
+//====================================================
+
+function mostrarErro(texto){
+
+    removerDigitando();
+
+    areaResposta.innerHTML +=
+
+    `
+
+    <div class="mensagem erro">
+
+        <strong>Erro</strong><br><br>
+
+        ${texto}
+
+    </div>
+
+    `;
+
+    rolarChat();
+
+}
+
+
+
+//====================================================
+// Remover Processando
+//====================================================
+
+function removerDigitando(){
+
+    const digitando =
+
     document.getElementById(
 
-        "totalProdutos"
-
-    ).innerHTML =
-
-    resultado.dados.totalProdutos;
-
-
-
-    document.getElementById(
-
-        "totalLotes"
-
-    ).innerHTML =
-
-    resultado.dados.lotesAtivos;
-
-
-
-    document.getElementById(
-
-        "quantidadeTotal"
-
-    ).innerHTML =
-
-    resultado.dados.quantidadeTotal;
-
-
-
-    document.getElementById(
-
-        "valorEstoque"
-
-    ).innerHTML =
-
-    resultado.dados.valorCustoEstoque
-
-    .toLocaleString(
-
-        "pt-BR",
-
-        {
-
-            style:"currency",
-
-            currency:"BRL"
-
-        }
+        "digitando"
 
     );
 
-}
+    if(digitando){
 
-
-
-/**************************************************************
- * BOTÕES RÁPIDOS
- **************************************************************/
-
-function consultaRapida(texto){
-
-    campoPergunta.value = texto;
-
-    consultar();
-
-}
-
-
-
-/**************************************************************
- * INTERPRETAÇÃO DAS PERGUNTAS
- **************************************************************/
-
-function interpretarPergunta(pergunta){
-
-    pergunta = pergunta.toLowerCase();
-
-
-
-    if(
-
-        pergunta.includes("estoque")
-
-    ){
-
-        return "RESUMO_ESTOQUE";
-
-    }
-
-
-
-    if(
-
-        pergunta.includes("venc")
-
-    ){
-
-        return "LISTAR_VENCIMENTOS";
-
-    }
-
-
-
-    if(
-
-        pergunta.includes("histórico")
-
-        ||
-
-        pergunta.includes("historico")
-
-    ){
-
-        return "HISTORICO_GERAL";
-
-    }
-
-
-
-    if(
-
-        pergunta.includes("baixo")
-
-        ||
-
-        pergunta.includes("acabando")
-
-    ){
-
-        return "CONSULTAR_ESTOQUE_BAIXO";
-
-    }
-
-
-
-    return "RESUMO_ESTOQUE";
-
-}
-/**************************************************************
- * FORMATAÇÃO DAS RESPOSTAS
- **************************************************************/
-
-function formatarResposta(resultado){
-
-    if(!resultado.status){
-
-        return `
-            <h3>❌ Erro</h3>
-            <p>${resultado.erro || "Erro desconhecido."}</p>
-        `;
-
-    }
-
-    switch(resultado.acao){
-
-        case "RESUMO_ESTOQUE":
-
-            return `
-
-                <h3>📦 Resumo do Estoque</h3>
-
-                <p><b>Produtos:</b> ${resultado.dados.totalProdutos}</p>
-
-                <p><b>Lotes Ativos:</b> ${resultado.dados.lotesAtivos}</p>
-
-                <p><b>Quantidade:</b> ${resultado.dados.quantidadeTotal}</p>
-
-                <p><b>Valor:</b> ${resultado.dados.valorCustoEstoque.toLocaleString(
-                    "pt-BR",
-                    {
-                        style:"currency",
-                        currency:"BRL"
-                    }
-                )}</p>
-
-            `;
-
-
-        case "CONSULTAR_ESTOQUE_BAIXO":
-
-            if(resultado.dados.produtos.length===0){
-
-                return `
-
-                    <h3>📉 Estoque Baixo</h3>
-
-                    <p>✅ Nenhum produto com estoque baixo.</p>
-
-                `;
-
-            }
-
-            return `
-
-                <h3>📉 Produtos com Estoque Baixo</h3>
-
-                <ul>
-
-                ${resultado.dados.produtos.map(p=>`
-
-                    <li>
-
-                        <b>${p.produto}</b>
-
-                        <br>
-
-                        Quantidade: ${p.quantidade}
-
-                    </li>
-
-                `).join("")}
-
-                </ul>
-
-            `;
-
-
-
-        case "LISTAR_VENCIMENTOS":
-
-            if(resultado.dados.produtos.length===0){
-
-                return `
-
-                    <h3>⏳ Vencimentos</h3>
-
-                    <p>✅ Nenhum produto próximo do vencimento.</p>
-
-                `;
-
-            }
-
-            return `
-
-                <h3>⏳ Próximos Vencimentos</h3>
-
-                <ul>
-
-                ${resultado.dados.produtos.map(p=>`
-
-                    <li>
-
-                        <b>${p.produto}</b>
-
-                        <br>
-
-                        Validade:
-                        ${new Date(p.validade).toLocaleDateString("pt-BR")}
-
-                        <br>
-
-                        Quantidade:
-                        ${p.quantidade}
-
-                        <br>
-
-                        Lote:
-                        ${p.lote}
-
-                    </li>
-
-                `).join("")}
-
-                </ul>
-
-            `;
-
-
-
-        case "HISTORICO_GERAL":
-
-            return `
-
-                <h3>📜 Histórico</h3>
-
-                <ul>
-
-                ${resultado.dados.movimentacoes.map(m=>`
-
-                    <li>
-
-                        <b>${m.tipo}</b>
-
-                        -
-
-                        ${m.produto}
-
-                        <br>
-
-                        Quantidade:
-                        ${m.quantidade}
-
-                        <br>
-
-                        Data:
-                        ${new Date(m.data).toLocaleDateString("pt-BR")}
-
-                        <br>
-
-                        ${m.observacao}
-
-                    </li>
-
-                `).join("")}
-
-                </ul>
-
-            `;
-
-        default:
-
-            return `
-
-                <h3>✅ Consulta realizada</h3>
-
-            `;
+        digitando.remove();
 
     }
 
@@ -487,94 +419,14 @@ function formatarResposta(resultado){
 
 
 
-/**************************************************************
- * UPLOAD DE IMAGEM
- **************************************************************/
+//====================================================
+// Rolagem Automática
+//====================================================
 
-const imagem = document.getElementById("imagem");
+function rolarChat(){
 
-if(imagem){
+    areaResposta.scrollTop =
 
-    imagem.addEventListener("change",function(){
-
-        if(this.files.length===0){
-
-            return;
-
-        }
-
-        adicionarMensagem(
-
-            "usuario",
-
-            "📷 Imagem selecionada:<br><b>"+this.files[0].name+"</b>"
-
-        );
-
-        adicionarMensagem(
-
-            "sistema",
-
-            "✔ Imagem carregada.<br>Preparada para futura análise por IA."
-
-        );
-
-    });
+    areaResposta.scrollHeight;
 
 }
-
-
-
-/**************************************************************
- * RECONHECIMENTO DE VOZ
- **************************************************************/
-
-const SpeechRecognition =
-window.SpeechRecognition ||
-window.webkitSpeechRecognition;
-
-if(SpeechRecognition){
-
-    const reconhecimento = new SpeechRecognition();
-
-    reconhecimento.lang="pt-BR";
-
-    reconhecimento.continuous=false;
-
-    reconhecimento.interimResults=false;
-
-    const botaoVoz=document.getElementById("voz");
-
-    if(botaoVoz){
-
-        botaoVoz.addEventListener("click",function(){
-
-            reconhecimento.start();
-
-        });
-
-    }
-
-    reconhecimento.onresult=function(event){
-
-        campoPergunta.value=
-
-        event.results[0][0].transcript;
-
-    };
-
-}
-
-
-
-/**************************************************************
- * CONSULTA AUTOMÁTICA AO ABRIR
- **************************************************************/
-
-window.onload=function(){
-
-    campoPergunta.value="estoque";
-
-    consultar();
-
-};

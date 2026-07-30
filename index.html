@@ -5,11 +5,15 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>Gerente Digital</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css">
 
 </head>
 
@@ -17,149 +21,96 @@
 
 <div class="app">
 
+    <!--==============================
+        Cabeçalho
+    ==============================-->
+
     <header class="topo">
 
-        <div>
+        <h1>🤖 Gerente Digital</h1>
 
-            <h1>🤖 Gerente Digital</h1>
+        <span class="status">
 
-            <span class="status">
+            ● Sistema Online
 
-                🟢 Sistema Online
-
-            </span>
-
-        </div>
+        </span>
 
     </header>
 
 
 
-    <section class="painel">
+    <!--==============================
+        Conversa
+    ==============================-->
 
-        <div class="card">
-
-            <span>📦 Produtos</span>
-
-            <strong id="totalProdutos">--</strong>
-
-        </div>
-
-        <div class="card">
-
-            <span>📚 Lotes</span>
-
-            <strong id="totalLotes">--</strong>
-
-        </div>
-
-        <div class="card">
-
-            <span>📊 Quantidade</span>
-
-            <strong id="quantidadeTotal">--</strong>
-
-        </div>
-
-        <div class="card">
-
-            <span>💰 Estoque</span>
-
-            <strong id="valorEstoque">--</strong>
-
-        </div>
-
-    </section>
-
-
-
-    <section id="chat" class="chat">
+    <main
+        id="resposta"
+        class="chat">
 
         <div class="mensagem sistema">
 
-            Bem-vinda ao Gerente Digital.
+            <strong>Gerente Digital</strong>
+
+            <br><br>
+
+            Olá!
+
+            <br><br>
+
+            Estou pronto para registrar informações
+            na sua planilha.
 
         </div>
 
-    </section>
+    </main>
 
 
 
-    <section class="atalhos">
+    <!--==============================
+        Área de Digitação
+    ==============================-->
 
-        <button onclick="consultaRapida('estoque')">
-
-            📦 Estoque
-
-        </button>
-
-        <button onclick="consultaRapida('vencimentos')">
-
-            ⚠️ Vencimentos
-
-        </button>
-
-        <button onclick="consultaRapida('baixo')">
-
-            📉 Estoque Baixo
-
-        </button>
-
-        <button onclick="consultaRapida('histórico')">
-
-            📜 Histórico
-
-        </button>
-
-    </section>
-
-
-
-    <section class="entrada">
+    <footer class="entrada">
 
         <textarea
 
             id="pergunta"
 
-            placeholder="Digite sua pergunta..."
+            placeholder="Digite uma informação..."
 
         ></textarea>
 
+
+
         <div class="acoes">
 
-            <label class="upload">
+            <button
 
-                📷
+                id="microfone"
 
-                <input
-
-                    type="file"
-
-                    id="imagem"
-
-                    accept="image/*"
-
-                >
-
-            </label>
-
-            <button id="voz">
+                title="Microfone">
 
                 🎤
 
             </button>
 
-            <button id="enviar">
 
-                ➜
+
+            <button
+
+                id="enviar">
+
+                Enviar
 
             </button>
 
         </div>
 
-    </section>
+    </footer>
 
 </div>
+
+
 
 <script src="config.js"></script>
 
