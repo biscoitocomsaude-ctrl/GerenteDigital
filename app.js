@@ -157,38 +157,36 @@ async function enviarMensagem(){
     try{
 
 
-        const dados = new FormData();
-
-
-
-        dados.append(
-            "token",
-            CONFIG.TOKEN
-        );
-
-
-
-        dados.append(
-            "mensagem",
-            mensagem
-        );
-
-
-
         const resposta = await fetch(
 
-            CONFIG.API_URL,
+    CONFIG.API_URL,
 
-            {
+    {
 
-                method:"POST",
+        method:"POST",
 
-                body:dados
+        headers:{
 
-            }
+            "Content-Type":
+            "application/x-www-form-urlencoded"
 
-        );
+        },
 
+        body:
+
+        new URLSearchParams({
+
+            token:
+            CONFIG.TOKEN,
+
+            mensagem:
+            mensagem
+
+        })
+
+    }
+
+);
 
 
         const retorno = await resposta.json();
