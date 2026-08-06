@@ -11,7 +11,7 @@ const CONFIG = {
 
     NOME: "Gerente Digital",
 
-    VERSAO: "1.0.0",
+    VERSAO: "2.0.0",
 
 
     //=========================================
