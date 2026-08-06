@@ -154,24 +154,23 @@ async function enviarMensagem(){
 
 
 
-    try{
-
-
-        const resposta = await fetch(
+  
+try{
 
     window.location.href = CONFIG.API_URL;
 
+}
+catch(erro){
+
+    mostrarErro(
+        "Falha na comunicação: " + erro.message
+    );
+
+}
 
 
-        const retorno = await resposta.json();
 
-
-
-        mostrarResposta(retorno);
-
-
-
-    }
+    
 
 
     catch(erro){
