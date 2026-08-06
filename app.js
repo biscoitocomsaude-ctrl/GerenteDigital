@@ -165,22 +165,13 @@ async function enviarMensagem(){
 
         method:"POST",
 
-        headers:{
-
-            "Content-Type":
-            "application/x-www-form-urlencoded"
-
-        },
-
         body:
 
         new URLSearchParams({
 
-            token:
-            CONFIG.TOKEN,
+            token: CONFIG.TOKEN,
 
-            mensagem:
-            mensagem
+            mensagem: mensagem
 
         })
 
