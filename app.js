@@ -1,23 +1,24 @@
 /**************************************************************
  * APP.JS
- * Gerente Digital V1.1
+ * Gerente Digital V2.0
  * Interface de Conversa
  **************************************************************/
+
 
 //====================================================
 // Elementos da tela
 //====================================================
 
-const txtPergunta =
+const txtPergunta = 
 document.getElementById("pergunta");
 
-const btnEnviar =
+const btnEnviar = 
 document.getElementById("enviar");
 
-const btnMicrofone =
+const btnMicrofone = 
 document.getElementById("microfone");
 
-const areaResposta =
+const areaResposta = 
 document.getElementById("resposta");
 
 
@@ -26,21 +27,16 @@ document.getElementById("resposta");
 //====================================================
 
 btnEnviar.addEventListener(
-
     "click",
-
     enviarMensagem
-
 );
 
 
 txtPergunta.addEventListener(
-
     "keydown",
-
     function(e){
 
-        if(e.key==="Enter" && !e.shiftKey){
+        if(e.key === "Enter" && !e.shiftKey){
 
             e.preventDefault();
 
@@ -49,149 +45,137 @@ txtPergunta.addEventListener(
         }
 
     }
-
 );
 
 
 //====================================================
-// Reconhecimento de Voz
+// Microfone
 //====================================================
 
 let reconhecimento = null;
+
 
 const SpeechRecognition =
 window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
+
+
 if(SpeechRecognition){
 
-    reconhecimento =
 
-    new SpeechRecognition();
+    reconhecimento = new SpeechRecognition();
+
 
     reconhecimento.lang = "pt-BR";
 
+
     reconhecimento.interimResults = false;
+
 
     reconhecimento.maxAlternatives = 1;
 
+
+
     btnMicrofone.addEventListener(
-
         "click",
-
         iniciarMicrofone
-
     );
+
 
 }
 else{
 
+
     btnMicrofone.disabled = true;
 
-    btnMicrofone.innerHTML = "❌";
-
-    btnMicrofone.title =
-    "Reconhecimento de voz não suportado.";
 
 }
 
 
-
-//====================================================
-// Iniciar Microfone
-//====================================================
 
 function iniciarMicrofone(){
 
-    btnMicrofone.innerHTML = "🎙️";
-
-    btnMicrofone.disabled = true;
 
     reconhecimento.start();
 
+
 }
 
 
-
-//====================================================
-// Resultado
-//====================================================
 
 if(reconhecimento){
 
-    reconhecimento.onresult =
 
-    function(event){
+    reconhecimento.onresult = function(event){
+
 
         const texto =
-
         event.results[0][0].transcript;
+
 
         txtPergunta.value = texto;
 
-        txtPergunta.focus();
 
     };
 
-
-    reconhecimento.onend =
-
-    function(){
-
-        btnMicrofone.innerHTML = "🎤";
-
-        btnMicrofone.disabled = false;
-
-    };
-
-
-    reconhecimento.onerror =
-
-    function(){
-
-        btnMicrofone.innerHTML = "🎤";
-
-        btnMicrofone.disabled = false;
-
-    };
 
 }
 
 
 
 //====================================================
-// Enviar Mensagem
+// Envio para Apps Script
 //====================================================
 
 async function enviarMensagem(){
 
-    const mensagem =
 
+    const mensagem =
     txtPergunta.value.trim();
 
-    if(mensagem===""){
 
-        txtPergunta.focus();
+
+    if(!mensagem){
 
         return;
 
     }
 
-    mostrarMensagemUsuario(
 
-        mensagem
 
-    );
+    mostrarMensagemUsuario(mensagem);
 
-    txtPergunta.value="";
+
+    txtPergunta.value = "";
+
 
     mostrarCarregando();
 
+
+
     try{
 
-        const resposta =
 
-        await fetch(
+        const dados = new FormData();
+
+
+
+        dados.append(
+            "token",
+            CONFIG.TOKEN
+        );
+
+
+
+        dados.append(
+            "mensagem",
+            mensagem
+        );
+
+
+
+        const resposta = await fetch(
 
             CONFIG.API_URL,
 
@@ -199,65 +183,52 @@ async function enviarMensagem(){
 
                 method:"POST",
 
-                headers:{
-
-                    "Content-Type":"application/json"
-
-                },
-
-                body:JSON.stringify({
-
-                    token:CONFIG.TOKEN,
-
-                    mensagem:mensagem
-
-                })
+                body:dados
 
             }
 
         );
 
-        if(!resposta.ok){
 
-            throw new Error(
 
-                "Erro de comunicação."
+        const retorno = await resposta.json();
 
-            );
 
-        }
 
-       const dados = {
-token: CONFIG.TOKEN,
-acao: acao,
-mensagem: pergunta
-};
+        mostrarResposta(retorno);
+
+
 
     }
+
 
     catch(erro){
 
+
         mostrarErro(
 
-            erro.message
+            "Falha na comunicação: " 
+            + erro.message
 
         );
 
+
     }
+
 
 }
 
 
 
 //====================================================
-// Mensagem do Usuário
+// Mensagem usuário
 //====================================================
 
 function mostrarMensagemUsuario(texto){
 
-    areaResposta.innerHTML +=
 
-    `
+    areaResposta.innerHTML += `
+
 
     <div class="mensagem usuario">
 
@@ -267,35 +238,39 @@ function mostrarMensagemUsuario(texto){
 
     </div>
 
+
     `;
 
+
     rolarChat();
+
 
 }
 
 
 
 //====================================================
-// Processando
+// Carregando
 //====================================================
 
 function mostrarCarregando(){
 
-    areaResposta.innerHTML +=
 
-    `
+    areaResposta.innerHTML += `
 
-    <div
-        id="digitando"
-        class="mensagem sistema">
 
-        Gerente Digital está processando...
+    <div id="digitando" class="mensagem sistema">
+
+        Gerente Digital processando...
 
     </div>
 
+
     `;
 
+
     rolarChat();
+
 
 }
 
@@ -307,17 +282,16 @@ function mostrarCarregando(){
 
 function mostrarResposta(retorno){
 
+
     removerDigitando();
 
-    let texto="";
 
-    if(retorno.resposta){
 
-        texto = retorno.resposta;
+    let texto;
 
-    }
 
-    else if(retorno.mensagem){
+
+    if(retorno.mensagem){
 
         texto = retorno.mensagem;
 
@@ -332,32 +306,39 @@ function mostrarResposta(retorno){
     else{
 
         texto = JSON.stringify(
-
             retorno,
-
             null,
-
             2
-
         );
 
     }
 
-    areaResposta.innerHTML +=
 
-    `
+
+    areaResposta.innerHTML += `
+
 
     <div class="mensagem sistema">
 
-        <strong>Gerente Digital</strong><br><br>
+
+        <strong>Gerente Digital</strong>
+
+
+        <br><br>
+
 
         ${texto}
 
+
     </div>
+
 
     `;
 
+
+
     rolarChat();
+
 
 }
 
@@ -369,60 +350,73 @@ function mostrarResposta(retorno){
 
 function mostrarErro(texto){
 
+
     removerDigitando();
 
-    areaResposta.innerHTML +=
 
-    `
+
+    areaResposta.innerHTML += `
+
 
     <div class="mensagem erro">
 
-        <strong>Erro</strong><br><br>
+
+        <strong>Erro</strong>
+
+
+        <br><br>
+
 
         ${texto}
 
+
     </div>
+
 
     `;
 
+
     rolarChat();
+
 
 }
 
 
 
 //====================================================
-// Remover Processando
+// Remover carregando
 //====================================================
 
 function removerDigitando(){
 
-    const digitando =
 
+    const elemento = 
     document.getElementById(
-
         "digitando"
-
     );
 
-    if(digitando){
 
-        digitando.remove();
+
+    if(elemento){
+
+        elemento.remove();
 
     }
+
 
 }
 
 
 
 //====================================================
-// Rolagem Automática
+// Scroll
 //====================================================
 
 function rolarChat(){
 
-    areaResposta.scrollTop =
 
+    areaResposta.scrollTop =
     areaResposta.scrollHeight;
+
 
 }
