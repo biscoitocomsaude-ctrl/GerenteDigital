@@ -159,25 +159,8 @@ async function enviarMensagem(){
 
         const resposta = await fetch(
 
-    CONFIG.API_URL,
+    window.location.href = CONFIG.API_URL;
 
-    {
-
-        method:"POST",
-
-        body:
-
-        new URLSearchParams({
-
-            token: CONFIG.TOKEN,
-
-            mensagem: mensagem
-
-        })
-
-    }
-
-);
 
 
         const retorno = await resposta.json();
