@@ -129,93 +129,41 @@ if(reconhecimento){
 //====================================================
 
 async function enviarMensagem(){
-
-
-    const mensagem =
-    txtPergunta.value.trim();
-
-
-
+    const mensagem = txtPergunta.value.trim();
     if(!mensagem){
-
         return;
-
     }
-
-
-
     mostrarMensagemUsuario(mensagem);
-
-
     txtPergunta.value = "";
-
-
     mostrarCarregando();
-
-
-
     try{
-
-
-        const dados = new FormData();
-
-
-
-        dados.append(
-            "token",
-            CONFIG.TOKEN
-        );
-
-
-
-        dados.append(
-            "mensagem",
-            mensagem
-        );
-
-
+        // Mudamos de FormData para um objeto comum enviado como JSON
+        const corpoRequisicao = {
+            token: CONFIG.TOKEN,
+            mensagem: mensagem,
+            acao: ""
+        };
 
         const resposta = await fetch(
-
             CONFIG.API_URL,
-
             {
-
-                method:"POST",
-
-                body:dados
-
+                method: "POST",
+                // Usamos text/plain ou application/json para evitar bloqueios de CORS do Google
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(corpoRequisicao)
             }
-
         );
-
-
-
         const retorno = await resposta.json();
-
-
-
         mostrarResposta(retorno);
-
-
-
     }
-
-
     catch(erro){
-
-
         mostrarErro(
-
             "Falha na comunicação: " 
             + erro.message
-
         );
-
-
     }
-
-
 }
 
 
