@@ -9,10 +9,10 @@ const CONFIG = {
     // Sistema
     //=========================================
 
-    NOME: "Gerente Digital",
+    NOME: "Gerente Digital API online",
+",
 
     VERSAO: "2.0.0",
-
 
     //=========================================
     // API Apps Script
@@ -20,7 +20,6 @@ const CONFIG = {
 
     API_URL:
     "https://script.google.com/macros/s/AKfycbxVsc6gzxbpkDYXVA7ZNxJheLmNjokqIJBgcaEGgfdDAl-SuEdkJL6uJgC4OjmiiSV9/exec",
-
 
     //=========================================
     // Segurança
