@@ -154,23 +154,52 @@ async function enviarMensagem(){
 
 
 
-  
-try{
+    try{
 
-    window.location.href = CONFIG.API_URL;
 
-}
-catch(erro){
-
-    mostrarErro(
-        "Falha na comunicação: " + erro.message
-    );
-
-}
+        const dados = new FormData();
 
 
 
-    
+        dados.append(
+            "token",
+            CONFIG.TOKEN
+        );
+
+
+
+        dados.append(
+            "mensagem",
+            mensagem
+        );
+
+
+
+        const resposta = await fetch(
+
+            CONFIG.API_URL,
+
+            {
+
+                method:"POST",
+
+                body:dados
+
+            }
+
+        );
+
+
+
+        const retorno = await resposta.json();
+
+
+
+        mostrarResposta(retorno);
+
+
+
+    }
 
 
     catch(erro){
