@@ -1,59 +1,56 @@
-/**************************************************************
- * APP.JS
- * Gerente Digital V2.0
- * Interface de Conversa
- **************************************************************/
-
+/**
+********************************************************************
+- APP.JS
+- Gerente Digital V2.0
+- Interface de Conversa
+********************************************************************
+*/
 
 //====================================================
 // Elementos da tela
 //====================================================
 
-const txtPergunta = 
+const txtPergunta =
 document.getElementById("pergunta");
 
-const btnEnviar = 
+const btnEnviar =
 document.getElementById("enviar");
 
-const btnMicrofone = 
+const btnMicrofone =
 document.getElementById("microfone");
 
-const areaResposta = 
+const areaResposta =
 document.getElementById("resposta");
-
 
 //====================================================
 // Eventos
 //====================================================
 
 btnEnviar.addEventListener(
-    "click",
-    enviarMensagem
+"click",
+enviarMensagem
 );
-
 
 txtPergunta.addEventListener(
-    "keydown",
-    function(e){
+"keydown",
+function(e){
 
-        if(e.key === "Enter" && !e.shiftKey){
+    if(e.key === "Enter" && !e.shiftKey){
 
-            e.preventDefault();
+        e.preventDefault();
 
-            enviarMensagem();
-
-        }
+        enviarMensagem();
 
     }
-);
 
+}
+);
 
 //====================================================
 // Microfone
 //====================================================
 
 let reconhecimento = null;
-
 
 const SpeechRecognition =
 window.SpeechRecognition ||
@@ -62,7 +59,6 @@ window.webkitSpeechRecognition;
 
 
 if(SpeechRecognition){
-
 
     reconhecimento = new SpeechRecognition();
 
@@ -82,13 +78,10 @@ if(SpeechRecognition){
         iniciarMicrofone
     );
 
-
 }
 else{
 
-
     btnMicrofone.disabled = true;
-
 
 }
 
@@ -96,9 +89,7 @@ else{
 
 function iniciarMicrofone(){
 
-
     reconhecimento.start();
-
 
 }
 
@@ -106,19 +97,27 @@ function iniciarMicrofone(){
 
 if(reconhecimento){
 
-
     reconhecimento.onresult = function(event){
-
 
         const texto =
         event.results[0][0].transcript;
 
+        const textoAtual =
+        txtPergunta.value.trim();
 
-        txtPergunta.value = texto;
+        if(textoAtual){
 
+            txtPergunta.value =
+            textoAtual + " " + texto;
+
+        }
+        else{
+
+            txtPergunta.value = texto;
+
+        }
 
     };
-
 
 }
 
@@ -129,41 +128,55 @@ if(reconhecimento){
 //====================================================
 
 async function enviarMensagem(){
-    const mensagem = txtPergunta.value.trim();
-    if(!mensagem){
-        return;
-    }
-    mostrarMensagemUsuario(mensagem);
-    txtPergunta.value = "";
-    mostrarCarregando();
-    try{
-        // Mudamos de FormData para um objeto comum enviado como JSON
-        const corpoRequisicao = {
-            token: CONFIG.TOKEN,
-            mensagem: mensagem,
-            acao: ""
-        };
 
-        const resposta = await fetch(
-            CONFIG.API_URL,
-            {
-                method: "POST",
-                // Usamos text/plain ou application/json para evitar bloqueios de CORS do Google
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify(corpoRequisicao)
-            }
-        );
-        const retorno = await resposta.json();
-        mostrarResposta(retorno);
-    }
-    catch(erro){
-        mostrarErro(
-            "Falha na comunicação: " 
-            + erro.message
-        );
-    }
+const mensagem = txtPergunta.value.trim();
+
+if(!mensagem){
+return;
+}
+
+mostrarMensagemUsuario(mensagem);
+
+txtPergunta.value = "";
+
+mostrarCarregando();
+
+try{
+
+    // Mudamos de FormData para um objeto comum enviado como JSON
+    const corpoRequisicao = {
+        token: CONFIG.TOKEN,
+        mensagem: mensagem,
+        acao: ""
+    };
+
+
+    const resposta = await fetch(
+        CONFIG.API_URL,
+        {
+            method: "POST",
+            // Usamos text/plain ou application/json para evitar bloqueios de CORS do Google
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(corpoRequisicao)
+        }
+    );
+
+    const retorno = await resposta.json();
+
+    mostrarResposta(retorno);
+
+}
+catch(erro){
+
+    mostrarErro(
+        "Falha na comunicação: " 
+        + erro.message
+    );
+
+}
+
 }
 
 
@@ -174,24 +187,22 @@ async function enviarMensagem(){
 
 function mostrarMensagemUsuario(texto){
 
-
     areaResposta.innerHTML += `
 
 
-    <div class="mensagem usuario">
+<div class="mensagem usuario">
 
-        <strong>Você</strong><br><br>
+    <strong>Você</strong><br><br>
 
-        ${texto}
+    ${texto}
 
-    </div>
+</div>
 
 
-    `;
+`;
 
 
     rolarChat();
-
 
 }
 
@@ -203,22 +214,20 @@ function mostrarMensagemUsuario(texto){
 
 function mostrarCarregando(){
 
-
     areaResposta.innerHTML += `
 
 
-    <div id="digitando" class="mensagem sistema">
+<div id="digitando" class="mensagem sistema">
 
-        Gerente Digital processando...
+    Gerente Digital processando...
 
-    </div>
+</div>
 
 
-    `;
+`;
 
 
     rolarChat();
-
 
 }
 
@@ -230,9 +239,7 @@ function mostrarCarregando(){
 
 function mostrarResposta(retorno){
 
-
     removerDigitando();
-
 
 
     let texto;
@@ -266,27 +273,26 @@ function mostrarResposta(retorno){
     areaResposta.innerHTML += `
 
 
-    <div class="mensagem sistema">
+<div class="mensagem sistema">
 
 
-        <strong>Gerente Digital</strong>
+    <strong>Gerente Digital</strong>
 
 
-        <br><br>
+    <br><br>
 
 
-        ${texto}
+    ${texto}
 
 
-    </div>
+</div>
 
 
-    `;
+`;
 
 
 
     rolarChat();
-
 
 }
 
@@ -298,7 +304,6 @@ function mostrarResposta(retorno){
 
 function mostrarErro(texto){
 
-
     removerDigitando();
 
 
@@ -306,26 +311,25 @@ function mostrarErro(texto){
     areaResposta.innerHTML += `
 
 
-    <div class="mensagem erro">
+<div class="mensagem erro">
 
 
-        <strong>Erro</strong>
+    <strong>Erro</strong>
 
 
-        <br><br>
+    <br><br>
 
 
-        ${texto}
+    ${texto}
 
 
-    </div>
+</div>
 
 
-    `;
+`;
 
 
     rolarChat();
-
 
 }
 
@@ -336,7 +340,6 @@ function mostrarErro(texto){
 //====================================================
 
 function removerDigitando(){
-
 
     const elemento = 
     document.getElementById(
@@ -351,7 +354,6 @@ function removerDigitando(){
 
     }
 
-
 }
 
 
@@ -362,9 +364,7 @@ function removerDigitando(){
 
 function rolarChat(){
 
-
     areaResposta.scrollTop =
     areaResposta.scrollHeight;
-
 
 }
