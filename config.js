@@ -1,6 +1,6 @@
 const CONFIG = {
     NOME: "Gerente Digital",
-    VERSAO: "2.2.0",
-    API_URL: "https://script.google.com/macros/s/AKfycbztOtAUSjCLklvAy51axBBpB0pYLBP-pHknw7oOxVTMq81asgd8S7fsVvqHuqHY4p6y/exec",
+    VERSAO: "2.2.1",
+    API_URL: "https://script.google.com/macros/s/AKfycbwB1_I-oEyOW-71ucSydPmhNsZzLTkcFXGQmS4eciA5rcJhbhW9VmnEbZI4Azn0sSCt/exec",
     TOKEN: "gerentetorres"
 };
